@@ -1,20 +1,9 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+// App.tsx
+import React from 'react';
+import MainTabNavigator from './src/navigation/MainTabNavigator';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Flight App</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+const App: React.FC = () => {
+  return <MainTabNavigator />;
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
