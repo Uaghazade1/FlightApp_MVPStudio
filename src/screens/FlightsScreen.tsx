@@ -1,11 +1,10 @@
-// src/screens/FlightScreen.tsx
 import React, { useState } from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
 import FlightCard from '../components/FlightCard';
 import EmptyState from '../components/EmptyState';
 import AddFlightButton from '../components/AddFlightButton';
 import AddFlightModal from '../components/AddFlightModal';
-import { Flight } from '../types'; // Import the Flight type
+import { Flight } from '../types'; 
 
 const FlightScreen: React.FC = () => {
   const [flights, setFlights] = useState<Flight[]>([]);

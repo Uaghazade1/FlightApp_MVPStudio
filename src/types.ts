@@ -6,7 +6,7 @@ export interface Flight {
   time: string;
   date: string;
   airline: string;
-  arrivalDate: string; // Add this line
-  arrivalTime: string; // Add this line
+  arrivalDate: string;
+  arrivalTime: string;
   difference: string;
 }

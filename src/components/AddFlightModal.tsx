@@ -17,24 +17,25 @@ const AddFlightModal: React.FC<AddFlightModalProps> = ({ visible, onClose, onAdd
   const [departure, setDeparture] = useState<string>(cities[0]);
   const [arrival, setArrival] = useState<string>(cities[1]);
   const [time, setTime] = useState<string>(times[0]);
-  const [date, setDate] = useState<string>(new Date().toISOString().split('T')[0]); // Use ISO format for date
+  const [date, setDate] = useState<string>(new Date().toISOString().split('T')[0]); 
   const [airline, setAirline] = useState<string>(airlines[0]);
 
   const formatDate = (date: Date) => {
     const options: Intl.DateTimeFormatOptions = { day: '2-digit', month: 'short', year: 'numeric' };
-    return date.toLocaleDateString('en-GB', options); // en-GB gives the format you want
+    return date.toLocaleDateString('en-GB', options); 
   };
 
 
   const handleAddFlight = () => {
-  // Validate the date before creating a new flight
+
+    
   const parsedDate = new Date(date);
   if (isNaN(parsedDate.getTime())) {
     alert("Invalid date format. Please use YYYY-MM-DD.");
     return;
   }
 
-  // Extract departure time
+  
   const [timeHours, timeMinutes] = time.split(':');
   const isPM = time.includes('PM');
   let departureHours = parseInt(timeHours);
@@ -48,34 +49,30 @@ const AddFlightModal: React.FC<AddFlightModalProps> = ({ visible, onClose, onAdd
   const departureDate = new Date(parsedDate);
   departureDate.setHours(departureHours, parseInt(timeMinutes.split(' ')[0]));
 
-  // Generate a random flight duration between 2 and 12 hours
   const minHours = 2;
   const maxHours = 12;
   const randomHours = Math.floor(Math.random() * (maxHours - minHours + 1)) + minHours;
   const randomMinutes = Math.floor(Math.random() * 60);
 
-  // Calculate arrival date and time
   const arrivalDate = new Date(departureDate);
   arrivalDate.setHours(departureDate.getHours() + randomHours);
   arrivalDate.setMinutes(departureDate.getMinutes() + randomMinutes);
 
-  // Format the arrival date and time
   const arrivalDateStr = formatDate(arrivalDate); // Format arrival date as "18 Apr 2024"
   const arrivalTimeHours = arrivalDate.getHours();
   const arrivalTimeMinutes = arrivalDate.getMinutes();
   const arrivalTimeStr = `${arrivalTimeHours.toString().padStart(2, '0')}:${arrivalTimeMinutes.toString().padStart(2, '0')}`;
 
-  // Prepare flight object
   const newFlight: Flight = {
     id: Math.random().toString(),
     number: `Flight ${Math.floor(Math.random() * 1000)}`,
     departure,
     arrival,
     time: `${departureDate.getHours()}:${departureDate.getMinutes().toString().padStart(2, '0')}`,
-    date: formatDate(parsedDate), // Formatted date
+    date: formatDate(parsedDate),
     airline,
-    arrivalDate: arrivalDateStr, // Formatted arrival date
-    arrivalTime: arrivalTimeStr, // Arrival time
+    arrivalDate: arrivalDateStr,
+    arrivalTime: arrivalTimeStr,
     difference: `${randomHours}h ${randomMinutes}m`,
   };
 

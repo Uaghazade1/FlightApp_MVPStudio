@@ -8,10 +8,10 @@ interface FlightCardProps {
     number: string;
     departure: string;
     arrival: string;
-    arrivalDate: string; // Arrival Date
-    arrivalTime: string; // Arrival Time in 24-hour format
-    time: string; // Departure Time in 24-hour format
-    date: string; // Departure Date
+    arrivalDate: string;
+    arrivalTime: string; 
+    time: string;
+    date: string; 
     airline: string;
     difference?: string;
   };
