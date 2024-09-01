@@ -1,6 +1,5 @@
-// src/components/FlightCard.tsx
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Modal, Image, TouchableWithoutFeedback } from 'react-native';
 import { BlurView } from 'expo-blur';
 
 interface FlightCardProps {
@@ -9,14 +8,33 @@ interface FlightCardProps {
     number: string;
     departure: string;
     arrival: string;
-    time: string;
-    date: string;
+    arrivalDate: string; // Arrival Date
+    arrivalTime: string; // Arrival Time in 24-hour format
+    time: string; // Departure Time in 24-hour format
+    date: string; // Departure Date
     airline: string;
+    difference?: string;
   };
   onPress: () => void;
   onDelete: () => void;
   isSelected: boolean;
 }
+
+const airlineLogos: { [key: string]: any } = {
+  'Azerbaijan Airlines': require('../assets/azal.jpg'),
+  'Turkish Airlines': require('../assets/thy.png'),
+  'Anadolu Jet': require('../assets/ajet.jpg'),
+  'Fly Dubai': require('../assets/fly1.png'),
+  'RyanAir': require('../assets/ryanair.jpg'),
+  'WizzAir': require('../assets/wizz.png'),
+};
+
+const formatTime = (time: string): string => {
+  const [hours, minutes] = time.split(':').map(Number);
+  const period = hours >= 12 ? 'PM' : 'AM';
+  const formattedHours = ((hours + 11) % 12 + 1).toString().padStart(2, '0');
+  return `${formattedHours}:${minutes.toString().padStart(2, '0')} ${period}`;
+};
 
 const FlightCard: React.FC<FlightCardProps> = ({ flight, onPress, onDelete, isSelected }) => {
   const [isModalVisible, setModalVisible] = useState<boolean>(false);
@@ -36,14 +54,29 @@ const FlightCard: React.FC<FlightCardProps> = ({ flight, onPress, onDelete, isSe
         onLongPress={handleLongPress}
         style={[styles.card, isSelected && styles.selectedCard]}
       >
-        <Text style={styles.flightNumber}>{flight.number}</Text>
+        <View style={styles.row}>
+          <View style={styles.leftContainer}>
+            {airlineLogos[flight.airline] && (
+              <Image
+                resizeMode='contain'
+                source={airlineLogos[flight.airline]}
+                style={styles.logo}
+              />
+            )}
+            <Text style={styles.flightNumber}>{flight.number}</Text>
+            <Text style={styles.airline}> • {flight.airline}</Text>
+          </View>
+          <View style={styles.rightContainer}>
+            {flight.difference && <Text style={{color: '#d16e44', fontSize: 14, fontWeight: '500'}}>{flight.difference}</Text>}
+          </View>
+        </View>
         <Text>{flight.departure} to {flight.arrival}</Text>
-        <Text>{flight.time}</Text>
-        <Text>{flight.date}</Text>
-        <Text>{flight.airline}</Text>
+        <Text>Departure Date: {flight.date}</Text>
+        <Text>Arrival Date: {flight.arrivalDate}</Text>
+        <Text>Departure Time: {formatTime(flight.time)}</Text>
+        <Text>Arrival Time: {formatTime(flight.arrivalTime)}</Text>
       </TouchableOpacity>
 
-      {/* Modal for background blur effect */}
       {isModalVisible && (
         <Modal
           transparent
@@ -57,24 +90,33 @@ const FlightCard: React.FC<FlightCardProps> = ({ flight, onPress, onDelete, isSe
                 style={styles.absolute}
                 intensity={30}
                 tint="dark"
-                
               />
-              <View style={styles.modalContent}>
-              <Text style={styles.flightNumber}>{flight.number}</Text>
-        <Text>{flight.departure} to {flight.arrival}</Text>
-        <Text>{flight.time}</Text>
-        <Text>{flight.date}</Text>
-        <Text>{flight.airline}</Text>
-                <TouchableOpacity
-                  style={styles.deleteButton}
-                  onPress={() => {
-                    onDelete();
-                    handleCloseModal();
-                  }}
-                >
-                  <Text style={styles.deleteButtonText}>Delete</Text>
-                </TouchableOpacity>
+              <View style={styles.cardModal}>
+                {airlineLogos[flight.airline] && (
+                  <Image
+                    resizeMode='contain'
+                    source={airlineLogos[flight.airline]}
+                    style={styles.logo}
+                  />
+                )}
+                <Text style={styles.flightNumber}>{flight.number}</Text>
+                <Text>{flight.departure} to {flight.arrival}</Text>
+                <Text>Departure Date: {flight.date}</Text>
+                <Text>Arrival Date: {flight.arrivalDate}</Text>
+                <Text>Departure Time: {formatTime(flight.time)}</Text>
+                <Text>Arrival Time: {formatTime(flight.arrivalTime)}</Text>
+                <Text>{flight.airline}</Text>
+                {flight.difference && <Text>{flight.difference}</Text>}
               </View>
+              <TouchableOpacity
+                style={styles.deleteButton}
+                onPress={() => {
+                  onDelete();
+                  handleCloseModal();
+                }}
+              >
+                <Text style={styles.deleteButtonText}>Remove Flight</Text>
+              </TouchableOpacity>
             </View>
           </TouchableWithoutFeedback>
         </Modal>
@@ -86,19 +128,37 @@ const FlightCard: React.FC<FlightCardProps> = ({ flight, onPress, onDelete, isSe
 const styles = StyleSheet.create({
   card: {
     padding: 15,
-    marginVertical: 10,
+    marginVertical: 5,
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: '#ccc',
+  },
+  cardModal: {
+    padding: 15,
+    width: '90%',
     backgroundColor: '#f0f0f0',
-    borderRadius: 10,
+    borderRadius: 15,
     borderWidth: 1,
     borderColor: '#ccc',
   },
   selectedCard: {
-    backgroundColor: '#e0f7fa',
-    borderColor: '#00796b',
+    borderColor: '#000',
+  },
+  logo: {
+    width: 25,
+    height: 25,
+    borderWidth: 0.3,
+    borderColor: 'gray',
+    borderRadius: 50,
+    resizeMode: 'contain',
   },
   flightNumber: {
-    fontWeight: 'bold',
-    marginBottom: 5,
+    marginLeft: 10,
+    fontSize: 14,
+    color: '#404040',
+  },
+  airline: {
+    color: '#404040',
   },
   overlay: {
     flex: 1,
@@ -108,28 +168,33 @@ const styles = StyleSheet.create({
   absolute: {
     ...StyleSheet.absoluteFillObject,
   },
-  modalContent: {
-    width: '80%',
-    backgroundColor: 'blue',
-    padding: 20,
-    borderRadius: 10,
-    alignItems: 'center',
-    position: 'absolute',
-    top: '20%',
-  },
-  modalText: {
-    fontSize: 16,
-    marginBottom: 10,
-  },
   deleteButton: {
-    marginTop: 20,
-    padding: 10,
-    backgroundColor: '#ff3b30',
-    borderRadius: 5,
+    marginTop: 10,
+    padding: 15,
+    width: '90%',
+    backgroundColor: '#f9e2e2',
+    borderRadius: 10,
   },
   deleteButtonText: {
-    color: '#fff',
+    color: '#7f1e1d',
+    fontWeight: '600',
     fontSize: 16,
+    textAlign: 'center',
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  leftContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  rightContainer: {
+    alignItems: 'flex-end',
+    backgroundColor: '#fef7ed',
+    padding: 5,
+    borderRadius: 8
   },
 });
 
