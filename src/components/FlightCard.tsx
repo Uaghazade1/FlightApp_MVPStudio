@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, Image, TouchableWithoutFeedback } from 'react-native';
 import { BlurView } from 'expo-blur';
+import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 
 interface FlightCardProps {
   flight: {
@@ -9,9 +10,9 @@ interface FlightCardProps {
     departure: string;
     arrival: string;
     arrivalDate: string;
-    arrivalTime: string; 
+    arrivalTime: string;
     time: string;
-    date: string; 
+    date: string;
     airline: string;
     difference?: string;
   };
@@ -67,14 +68,19 @@ const FlightCard: React.FC<FlightCardProps> = ({ flight, onPress, onDelete, isSe
             <Text style={styles.airline}> • {flight.airline}</Text>
           </View>
           <View style={styles.rightContainer}>
-            {flight.difference && <Text style={{color: '#d16e44', fontSize: 14, fontWeight: '500'}}>{flight.difference}</Text>}
+            {flight.difference && (
+              <Text style={styles.difference}>{flight.difference}</Text>
+            )}
           </View>
         </View>
-        <Text>{flight.departure} to {flight.arrival}</Text>
-        <Text>Departure Date: {flight.date}</Text>
-        <Text>Arrival Date: {flight.arrivalDate}</Text>
-        <Text>Departure Time: {formatTime(flight.time)}</Text>
-        <Text>Arrival Time: {formatTime(flight.arrivalTime)}</Text>
+        <FlightInfo
+          departure={flight.departure}
+          arrival={flight.arrival}
+          date={flight.date}
+          arrivalDate={flight.arrivalDate}
+          time={flight.time}
+          arrivalTime={flight.arrivalTime}
+        />
       </TouchableOpacity>
 
       {isModalVisible && (
@@ -92,31 +98,43 @@ const FlightCard: React.FC<FlightCardProps> = ({ flight, onPress, onDelete, isSe
                 tint="dark"
               />
               <View style={styles.cardModal}>
-                {airlineLogos[flight.airline] && (
-                  <Image
-                    resizeMode='contain'
-                    source={airlineLogos[flight.airline]}
-                    style={styles.logo}
-                  />
-                )}
-                <Text style={styles.flightNumber}>{flight.number}</Text>
-                <Text>{flight.departure} to {flight.arrival}</Text>
-                <Text>Departure Date: {flight.date}</Text>
-                <Text>Arrival Date: {flight.arrivalDate}</Text>
-                <Text>Departure Time: {formatTime(flight.time)}</Text>
-                <Text>Arrival Time: {formatTime(flight.arrivalTime)}</Text>
-                <Text>{flight.airline}</Text>
-                {flight.difference && <Text>{flight.difference}</Text>}
+                <View style={styles.row}>
+                  <View style={styles.leftContainer}>
+                    {airlineLogos[flight.airline] && (
+                      <Image
+                        resizeMode='contain'
+                        source={airlineLogos[flight.airline]}
+                        style={styles.logo}
+                      />
+                    )}
+                    <Text style={styles.flightNumber}>{flight.number}</Text>
+                    <Text style={styles.airline}> • {flight.airline}</Text>
+                  </View>
+                  <View style={styles.rightContainer}>
+                    {flight.difference && (
+                      <Text style={styles.difference}>{flight.difference}</Text>
+                    )}
+                  </View>
+                </View>
+                <FlightInfo
+                  departure={flight.departure}
+                  arrival={flight.arrival}
+                  date={flight.date}
+                  arrivalDate={flight.arrivalDate}
+                  time={flight.time}
+                  arrivalTime={flight.arrivalTime}
+                />
+                
               </View>
               <TouchableOpacity
-                style={styles.deleteButton}
-                onPress={() => {
-                  onDelete();
-                  handleCloseModal();
-                }}
-              >
-                <Text style={styles.deleteButtonText}>Remove Flight</Text>
-              </TouchableOpacity>
+                  style={styles.deleteButton}
+                  onPress={() => {
+                    onDelete();
+                    handleCloseModal();
+                  }}
+                >
+                  <Text style={styles.deleteButtonText}>Remove Flight</Text>
+                </TouchableOpacity>
             </View>
           </TouchableWithoutFeedback>
         </Modal>
@@ -125,18 +143,53 @@ const FlightCard: React.FC<FlightCardProps> = ({ flight, onPress, onDelete, isSe
   );
 };
 
+const FlightInfo: React.FC<{
+  departure: string;
+  arrival: string;
+  date: string;
+  arrivalDate: string;
+  time: string;
+  arrivalTime: string;
+}> = ({ departure, arrival, date, arrivalDate, time, arrivalTime }) => (
+  <>
+    <View style={styles.infoRow}>
+      <View style={styles.infoItem}>
+        <MaterialCommunityIcons name="arrow-top-right-thin-circle-outline" size={18} color="#404040" />
+        <Text style={styles.infoText}>{date}</Text>
+      </View>
+      <View style={styles.infoItem}>
+        <MaterialCommunityIcons name="arrow-bottom-right-thin-circle-outline" size={18} color="#404040" />
+        <Text style={styles.infoText}>{arrivalDate}</Text>
+      </View>
+    </View>
+    <View style={styles.infoRow}>
+      <Text style={styles.timeText}>{departure}</Text>
+      <View style={styles.airplaneRow}>
+        <Text style={styles.grayText}>----- </Text>
+        <Ionicons name="airplane-outline" size={24} color="gray" />
+        <Text style={styles.grayText}> -----</Text>
+      </View>
+      <Text style={styles.timeText}>{arrival}</Text>
+    </View>
+    <View style={styles.infoRow}>
+      <Text style={styles.smallText}>{formatTime(time)}</Text>
+      <Text style={styles.smallText}>{formatTime(arrivalTime)}</Text>
+    </View>
+  </>
+);
+
 const styles = StyleSheet.create({
   card: {
     padding: 15,
     marginVertical: 5,
     borderRadius: 15,
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderColor: '#ccc',
   },
   cardModal: {
     padding: 15,
     width: '90%',
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#fff',
     borderRadius: 15,
     borderWidth: 1,
     borderColor: '#ccc',
@@ -195,6 +248,39 @@ const styles = StyleSheet.create({
     backgroundColor: '#fef7ed',
     padding: 5,
     borderRadius: 8
+  },
+  infoRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10,
+  },
+  infoItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  infoText: {
+    color: '#404040',
+    fontSize: 12,
+    marginLeft: 5,
+  },
+  timeText: {
+    fontSize: 20,
+    fontWeight: '500',
+  },
+  airplaneRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  grayText: {
+    color: 'gray',
+  },
+  smallText: {
+    fontSize: 12,
+  },
+  difference: {
+    color: '#d10a0a',
+    fontSize: 14,
+    fontWeight: '500',
   },
 });
 

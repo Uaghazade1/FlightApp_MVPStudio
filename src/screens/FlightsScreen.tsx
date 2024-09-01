@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { View, FlatList, StyleSheet } from 'react-native';
+import { View, FlatList,Text, StyleSheet, TouchableOpacity } from 'react-native';
 import FlightCard from '../components/FlightCard';
 import EmptyState from '../components/EmptyState';
 import AddFlightButton from '../components/AddFlightButton';
 import AddFlightModal from '../components/AddFlightModal';
 import { Flight } from '../types'; 
+import { MaterialCommunityIcons, Ionicons} from '@expo/vector-icons';
+
 
 const FlightScreen: React.FC = () => {
   const [flights, setFlights] = useState<Flight[]>([]);
@@ -34,8 +36,16 @@ const FlightScreen: React.FC = () => {
         </>
       ) : (
         <>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20}}>
+        <Text style={{fontSize: 30, fontWeight: 'bold'}}>Flights</Text>
+        <TouchableOpacity onPress={() => setModalVisible(true)}>
+        <MaterialCommunityIcons name="plus" size={28} color="#404040" />
+        </TouchableOpacity>
+
+        </View>
           <FlatList
             data={flights}
+            showsVerticalScrollIndicator={false}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <FlightCard
@@ -46,7 +56,6 @@ const FlightScreen: React.FC = () => {
               />
             )}
           />
-                    <AddFlightButton onPress={() => setModalVisible(true)} />
 
         </>
       )}
@@ -57,7 +66,8 @@ const FlightScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 15,
+    paddingTop: 50,
+    paddingHorizontal: 15,
     backgroundColor: '#fff',
     justifyContent: 'center'
   },
