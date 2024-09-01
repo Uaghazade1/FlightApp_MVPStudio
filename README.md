@@ -2,7 +2,7 @@
 
 <h2>Demo</h2>
 <p>Here is a quick demo of my app in action:</p>
-<img src="https://github.com/Uaghazade1/FlightApp_MVPStudio/tree/main/src/assets/Demo.gif" alt="App Demo" />
+<img src="https://github.com/Uaghazade1/FlightApp_MVPStudio/blob/main/src/assets/demo.gif" alt="App Demo" width="400" />
 
 
 <p>Welcome to the <strong>Flight and Planning Expo App</strong>! This project is built using 
