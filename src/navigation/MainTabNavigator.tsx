@@ -1,10 +1,11 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
-import HomeScreen from '../screens/HomeScreen';
+import HomeScreen from '../screens/PlansScreen';
 import FlightsScreen from '../screens/FlightsScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import { SimpleLineIcons } from '@expo/vector-icons';
+import PlansScreen from '../screens/PlansScreen';
 
 type TabParamList = {
   Plans: undefined;
@@ -38,7 +39,7 @@ export default function MainTabNavigator() {
           tabBarInactiveTintColor: 'gray',
         })}
       >
-        <Tab.Screen options={{headerShown: false}} name="Plans" component={HomeScreen} />
+        <Tab.Screen options={{headerShown: false}} name="Plans" component={PlansScreen} />
         <Tab.Screen options={{headerShown: false}} name="Flights" component={FlightsScreen} />
         <Tab.Screen options={{headerShown: false}} name="Me" component={ProfileScreen} />
       </Tab.Navigator>
