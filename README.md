@@ -1,5 +1,10 @@
 <h1>Flight and Planning React Native Expo App</h1>
 
+<h2>Demo</h2>
+<p>Here is a quick demo of my app in action:</p>
+<img src="https://github.com/Uaghazade1/FlightApp_MVPStudio/tree/main/src/assets/demo.gif" alt="App Demo" />
+
+
 <p>Welcome to the <strong>Flight and Planning Expo App</strong>! This project is built using 
 <a href="https://reactnative.dev/">React Native</a> and <a href="https://expo.dev/">Expo</a>. 
 It provides a cross-platform mobile application that runs on both iOS and Android devices.</p>
