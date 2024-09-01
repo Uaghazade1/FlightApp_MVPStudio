@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from 'react-native';
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text>Open up App.tsx to stargt working on your app!</Text>
+      <Text>Flight App</Text>
       <StatusBar style="auto" />
     </View>
   );
